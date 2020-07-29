@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html style=" height: 100%; margin:0;" lang="en" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>AnonymousChat</title>
+    <style>
+      div.username{
+        margin-bottom : 3rem;
+      }
+      div.text {
+        background-color: #ccc;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-bottom: 2rem;
+        color:black;
+        position: relative;  
+        display: inline-block;
+        width: fit-content;
+        margin-bottom: 5px;
+      }
+      div.me{
+        background-color: rgb(64, 240, 152);
+      
+      }
+      div.overLayer{
+     
+        position: relative;  
+        display: block;
+      }
+      /* div.mine{
+        right: 7%;
+      } */
+    
+    
+    </style>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+  </head>
+  
+  <body style=" height: 100%; margin:0;">
+    <div style=" height: 100%; margin:0;" class="container-fluid">
+        <div class="well text-container" style="align-content: center;">
+            <h4> Chat anonymously with usernames</h4>
+        </div>
+        <div style="height: 0%;width: 100%; margin: 0;" >
+
+          <form  style="display: block;text-align: center; height: 100%;width: 100%; margin: 0;"  class="login">
+           
+              <input type="text" class="username" style="width: 30%;margin: 4 px;"  placeholder="Username">
+           
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+        </div>
+       
+        <div class="chat" style="height: 70%;width: 100%; margin: 0; visibility: hidden;">
+          <h1 class="nomsg" style="color: #eee;">No messages yet</h1>
+          <div style="position: relative; left:2%; height:100%;">
+            <div  style="width:100%; height:100%; overflow-y: auto;" class="all_messages">
+            
+            </div>
+          </div>
+
+          <form class="message form-inline" style="text-align: center; height:8%; width:100%;  position: absolute; bottom: 1px;" >
+           
+            <input type="text" style="position: relative; float: left; left:2%; height:2.5em;  width : 80%;"  placeholder="Type your message here " class="message ">
+            <button type="submit" style="position: relative; float:right; right:7% ;width : 10%;" class="btn btn-primary mb-2">Post</button>
+
+          </form>
+        </div>
+        
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js" integrity="sha512-RjPwl9YNS2z4nf50767Vg8dW2WLVv8WmKMYhZVBgiCJaiGVNIjXcVcpzVLUzuojaUM5ACZefP6sXnaWkR0lj0w==" crossorigin="anonymous"></script>
+    
+    <script>
+      var message="",user_name="",socket=io.connect('http://127.0.0.1:5000/');
+      socket.on('connect',function(){
+        socket.emit('my event',{  
+          username:"server",
+          chat:'user connected'
+        })
+      })
+      
+      var formLogin=$('form.login').on('submit',function(e)
+      {
+        e.preventDefault()
+         user_name=$('input.username').val()
+        if(user_name!=="")
+          {
+            $("form.login").remove();
+            $("div.chat").css("visibility","visible");
+          }
+
+      })
+      var FormMessage=$('form.message').on('submit',function(e){
+        e.preventDefault();
+        message=$("input.message").val();
+        if(message!=="")
+        {
+          $('h1.nomsg').remove();
+          $('input.message').val('').focus();
+          socket.emit('my event',{
+            username:user_name,
+            chat:message
+          });
+        }
+      })
+
+       socket.on('my response',function(msg){
+        $('h1.nomsg').remove();
+      
+        if(msg.username==user_name)
+            $('div.all_messages').append("<div class='overLayer mine'><div  class='text me'>"+ msg.chat+"</div> </div>");
+        else   
+            $('div.all_messages').append("<div class='overLayer'><div class='text' ><b>"+msg.username+"</b><br>"+ msg.chat+"</div></div>");
+        var h=$('div.all_messages').height();
+        $('div.all_messages').scrollTop(1500*h);
+       })
+
+    </script>
+  </body>
+</html>
