@@ -5,7 +5,7 @@ app=Flask(__name__)
 
 app.config['SECRET_KEY']="b'!\xf7\x9e4\x02\x07\xddd\xa1\x9d\xc0\xc6O\xde\xb8\rz\xea\xb1\xc9\xa5\xa9\x92\x1f'"
 
-socketio=SocketIO(app,cors_allowed_origins="https://morning-inlet-73584.herokuapp.com/")
+socketio=SocketIO(app)
 
 
 @app.route('/')
