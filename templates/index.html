@@ -89,13 +89,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js" integrity="sha512-RjPwl9YNS2z4nf50767Vg8dW2WLVv8WmKMYhZVBgiCJaiGVNIjXcVcpzVLUzuojaUM5ACZefP6sXnaWkR0lj0w==" crossorigin="anonymous"></script>
     
     <script>
-      var message="",user_name="",socket=io.connect('wss://morning-inlet-73584.herokuapp.com/');
-      socket.on('connect',function(){
-        socket.emit('my event',{  
-          username:"server",
-          chat:'user connected'
-        })
-      })
+      var message="",user_name="",socket=io.connect('https://morning-inlet-73584.herokuapp.com/');
+      // socket.on('connect',function(){
+      //   socket.emit('my event',{  
+      //     username:"server",
+      //     chat:'user connected'
+      //   })
+      // })
       
       var formLogin=$('form.login').on('submit',function(e)
       {
@@ -105,6 +105,10 @@
           {
             $("form.login").remove();
             $("div.chat").css("visibility","visible");
+            socket.emit('my event',{  
+          username:"server",
+          chat:user_name +'connected'
+        })
           }
 
       })
